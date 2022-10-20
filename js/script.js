@@ -10,23 +10,29 @@ Aggiungere una select accanto al bottone di generazione, che fornisca una scelta
 - con difficoltà 3 => 49 caselle, con un numero compreso tra 1 e 49, divise in 7 caselle per 7 righe; */
 
 
-
+// scorciatoia per usare querySelector
+const el = document.querySelector.bind(document);
 
 // prendo la select della difficoltà
-const difficultSelectedUser = document.querySelector('select')
+const difficultSelectedUser = el('select')
 // prendo il bottone dall'html
-const playButton = document.querySelector('button');
+const playButton = el('button');
 //prendo il container in cui generare la griglia
-const container = document.querySelector('.container-custom');
+const container = el('.container-custom');
+// creo isPlay per verificare se la partita è in corso
+let isPlay = false;
 
-
-
-
-// al click sul bottone play
+// al click sul bottone play inizia il gioco
 playButton.addEventListener('click', function(){
+  startGame();
+});
 
-  // resetto l'inner HTML di container per eliminare eventauli celle della partita precedente
-  container.innerHTML = '';
+/**
+ * Questa funzione racchiude tutte le operazioni per iniziare a giocare
+ */
+function startGame() {
+  // faccio il reset della griglia
+  resetAll(container);
 
   //prendo il value della select (difficoltà selezionata)
   const difficultSelected = difficultSelectedUser.value;
@@ -41,13 +47,21 @@ playButton.addEventListener('click', function(){
   for(let i = 1; i <= cellsNumber; i++) {
     generateCells(cellsInline, i);
   }
+}
 
-});
 
-/** Funzione che dato il value della select della difficoltà di gioco mi     restituisce il numero di celle da stampare
+/** Arrow function che fa il reset html dell'elemento
+ * 
+ * @param {element} element 
+ * @returns svuota l'html
+ */
+const resetAll = (element) => element.innerHTML = '';
+
+
+/** Funzione che dato il value della select della difficoltà di gioco mi restituisce il numero di celle da stampare
  * 
  * @param {string} difficultSelectedUserValue 
- * @returns easy = 49 medium = 81 hard = 100  
+ * @returns easy = 49, medium = 81, hard = 100  
  */
 function difficultGame(difficultSelectedUserValue) {
   if (difficultSelectedUserValue === "easy") return cellsNumber = 49;
@@ -55,36 +69,42 @@ function difficultGame(difficultSelectedUserValue) {
   else return cellsNumber = 100;
 }
 
-/** Funzione che dato un numero mi restituisce la radice quadrata
+
+/** Arrow function che dato un numero mi restituisce la radice quadrata
  * 
  * @param {number} number 
  * @returns radice quadrata
  */
-function squareRoot(number) {
-  return Math.sqrt(number);
-}
+const squareRoot = (number) => Math.sqrt(number);
+
 
 /** Funzione che crea la cella con le varie classi e il calc della width e la appende nel container
  * 
  * @param {number} squareInline 
+ * @param {number} index 
  */
 function generateCells(squareInline, index) {
   // creo div.square
   const square = document.createElement('div');
-  // assegno classi Bootsrap flex alla cella per centrare la scritta
+  // assegno classi Bootsrap flex alla cella per centrare la scritta e classe .square
   square.classList.add('square', 'd-flex', 'justify-content-center', 'align-items-center');
   //scrivo lo stile inline del calc sulla width
   square.style.width = `calc(100% / ${squareInline})`;
   //scrivo il numero nel quadratino
   square.innerText = index;
-  // click sul quadrato
-  square.addEventListener('click', function(){
-    console.log(this.innerText);
-    this.classList.add('click');
-  })
   // appendo il quadratino al container
   container.append(square);
+  // questo accadrà quando cliccherò su quella cella
+  square.addEventListener('click', clickSquare);
 }
 
+
+/** 
+ * Funzione che riconosce la cella cliccata grazie a this, stampa in console il numero della della e assegna la classe .click
+ */
+function clickSquare() {
+  console.log(this.innerText);
+  this.classList.add('click');
+}
 
 
