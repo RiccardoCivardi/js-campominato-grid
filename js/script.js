@@ -19,8 +19,7 @@ const difficultSelectedUser = el('select')
 const playButton = el('button');
 //prendo il container in cui generare la griglia
 const container = el('.container-custom');
-// creo isPlay per verificare se la partita è in corso
-let isPlay = false;
+
 
 // al click sul bottone play inizia il gioco
 playButton.addEventListener('click', function(){
